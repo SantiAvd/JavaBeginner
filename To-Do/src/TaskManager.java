@@ -2,57 +2,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskManager {
-    private List<String> arrMenu = new ArrayList<>();
 
-    public  String taskMenu() {
-        StringBuilder menu = new StringBuilder();
+    private List<Task> tasks = new ArrayList<>();
 
-        arrMenu.add("1 - Добавить задачу");
-        arrMenu.add("2 - Показать задачи");
-        arrMenu.add("3 - Удалить задачу");
-        arrMenu.add("4 - Отметить завершенную задачу");
-        arrMenu.add("0 - Выход");
+    public String taskMenu() {
+        return """
+                1 - Добавить задачу
+                2 - Показать задачи
+                3 - Удалить задачу
+                4 - Отметить завершенную задачу
+                0 - Выход
+                """;
+    }
 
-        for (String arr: arrMenu) {
-          //  System.out.println(arr);
-            menu.append(arr + "\n");
+    public void addTask(String title) {
+        tasks.add(new Task(title));
+        System.out.println("Задача добавлена");
+    }
+
+    public void addTask(String title, String description) {
+        tasks.add(new Task(title, description));
+        System.out.println("Задача добавлена");
+    }
+
+    public void removeTask(int index) {
+        int i = index - 1;
+
+        if (i < 0 || i >= tasks.size()) {
+            System.out.println("Неверный индекс");
+            return;
         }
-        return menu.toString();
-//
-//
-//        StringBuilder menu = new StringBuilder();
-//        menu.append("\n1 - Добавить задачу\n");
-//        menu.append("2 - Показать задачи\n");
-//        menu.append("3 - Удалить задачу\n");
-//        menu.append("4 - Отметить завершенную задачу\n");
-//        menu.append("0 - Выход");
-//        return ;
+
+        System.out.println("Удалена: " + tasks.get(i));
+        tasks.remove(i);
     }
 
-    public List<Task> addTask(List<Task> list, String taskTitle) {
-        list.add(new Task(taskTitle));
-        System.out.println("Задача '" + taskTitle + "' добавлена.");
-        return list;
-    }
-
-    public List<Task> addTask(List<Task> list, String taskTitle, String taskDescription)  {
-        list.add(new Task(taskTitle, taskDescription));
-        return list;
-    }
-
-    public List<Task> removeTask(List<Task> list, int index) {
-
+    public void markTaskAsDone(int index) {
         int i = index - 1;
-        System.out.println("Задача " + list.get(i) + " удалена");
-        list.remove(i);
 
-        return list;
+        if (i < 0 || i >= tasks.size()) {
+            System.out.println("Неверный индекс");
+            return;
+        }
+
+        tasks.get(i).setDone(true);
+        System.out.println("Задача отмечена как выполненная");
     }
 
-    public List<Task> doneTask(List<Task> list, int index) {
-        int i = index - 1;
-        Task task = list.get(i);
-        task.changeDone();
-        return list;
+    public List<Task> getTasks() {
+        return tasks;
     }
 }

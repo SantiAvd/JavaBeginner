@@ -1,72 +1,75 @@
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.*;
-import java.util.logging.Logger;
-
-class OutOfListindException extends Exception {
-    private static Logger logger = Logger.getLogger("В списке нет таких пунктов");
-
-    public OutOfListindException(int choise) {
-        StringWriter trace = new StringWriter();
-        printStackTrace(new PrintWriter(trace));
-        logger.severe(trace.toString() + "В списке выбора действий нет пункта - " + choise + " максимум - 4");
-    }
-}
-
-
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-        List<Task> tasks = new ArrayList<>();
+
         TaskManager taskManager = new TaskManager();
-        Scanner scannerTask = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println(taskManager.taskMenu());
-            Scanner scanner = new Scanner(System.in);
+
             int choice = scanner.nextInt();
-            switch (choice) {
-                case 1:
-                    System.out.println("Добавление задачи");
-                    String taskTitle = scannerTask.nextLine();
-                    tasks = taskManager.addTask(tasks, taskTitle);
-                    break;
-                case 2:
-                    showTask(tasks);
-                    break;
-                case 3:
-                    System.out.println("Введите номер удаление задачи");
-                    int index = scannerTask.nextInt();
-                    taskManager.removeTask(tasks,index);
-                    break;
-                case 4:
-                    System.out.println("Введите номер завершенной задачи");
-                    int ind = scannerTask.nextInt();
-                    tasks = taskManager.doneTask(tasks, ind);
-                    break;
-                case 0:
-                    return;
-                default:
-                    try {
+            scanner.nextLine();
+
+            try {
+                switch (choice) {
+                    case 0:
+                        System.out.println("Выход...");
+                        return;
+
+                    case 1:
+                        System.out.println("Введите название задачи:");
+                        String title = scanner.nextLine();
+
+                        System.out.println("Введите описание (или оставьте пустым):");
+                        String description = scanner.nextLine();
+
+                        if (description.isEmpty()) {
+                            taskManager.addTask(title);
+                        } else {
+                            taskManager.addTask(title, description);
+                        }
+                        break;
+
+                    case 2:
+                        showTasks(taskManager.getTasks());
+                        break;
+
+                    case 3:
+                        System.out.println("Введите номер задачи для удаления:");
+                        int removeIndex = scanner.nextInt();
+                        taskManager.removeTask(removeIndex);
+                        break;
+
+                    case 4:
+                        System.out.println("Введите номер выполненной задачи:");
+                        int doneIndex = scanner.nextInt();
+                        taskManager.markTaskAsDone(doneIndex);
+                        break;
+
+                    default:
                         throw new OutOfListindException(choice);
-                    } catch (OutOfListindException e) {
-                        System.out.println("Выбранного пункта не существует" + e.getMessage());
-                    } finally {
-                        System.out.println("Попробуйе еще раз");
-                    }
-                    break;
+                }
+
+            } catch (OutOfListindException e) {
+                System.out.println(e.getMessage());
+                System.out.println("Попробуйте ещё раз");
             }
         }
     }
 
-    public static void showTask(List<Task> list) {
+    public static void showTasks(List<Task> list) {
         if (list.isEmpty()) {
             System.out.println("Задач пока нет!");
+            return;
         }
+
         int index = 1;
         for (Task task : list) {
-            System.out.println(index++ + " : " + task + " " + (task.isDone() ? "[✓]" : "[]"));
+            System.out.println(index++ + " : " + task);
         }
     }
 }
