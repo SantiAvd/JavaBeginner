@@ -6,6 +6,7 @@ public class Main {
     public static void main(String[] args) {
 
         TaskManager taskManager = new TaskManager();
+        taskManager.loadFromFile();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -17,6 +18,7 @@ public class Main {
             try {
                 switch (choice) {
                     case 0:
+                        taskManager.saveToFile();
                         System.out.println("Выход...");
                         return;
 
