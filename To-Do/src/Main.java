@@ -1,3 +1,5 @@
+import javax.imageio.IIOException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -6,7 +8,11 @@ public class Main {
     public static void main(String[] args) {
 
         TaskManager taskManager = new TaskManager();
-        taskManager.loadFromFile();
+        try {
+            taskManager.loadFromFile();
+        } catch (IOException e) {
+            System.out.println("Не удалось загрузить задачи из файла: " + e.getMessage());
+        }
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -14,14 +20,15 @@ public class Main {
 
             int choice = scanner.nextInt();
             scanner.nextLine();
-
-            try {
                 switch (choice) {
                     case 0:
-                        taskManager.saveToFile();
+                       try {
+                           taskManager.saveToFile();
+                       } catch (IOException e) {
+                           System.out.println("Ошибка сохранения файла" + e.getMessage());
+                       }
                         System.out.println("Выход...");
                         return;
-
                     case 1:
                         System.out.println("Введите название задачи:");
                         String title = scanner.nextLine();
@@ -53,13 +60,9 @@ public class Main {
                         break;
 
                     default:
-                        throw new OutOfListindException(choice);
+                        System.out.println("В списке выбора действий нет пункта - " + choice + ", максимум - 4");
+                        System.out.println("Попробуйте ещё раз");
                 }
-
-            } catch (OutOfListindException e) {
-                System.out.println(e.getMessage());
-                System.out.println("Попробуйте ещё раз");
-            }
         }
     }
 

@@ -54,7 +54,7 @@ public class TaskManager {
         System.out.println("Задача отмечена как выполненная");
     }
 
-    public void saveToFile() {
+    public void saveToFile() throws IOException {
         try (FileWriter writer = new FileWriter("tasks.txt")) {
 
             for (Task task : tasks) {
@@ -67,12 +67,10 @@ public class TaskManager {
 
             System.out.println("Задачи сохранены");
 
-        } catch (IOException e) {
-            System.out.println("Ошибка при сохранении: " + e.getMessage());
         }
     }
 
-    public void loadFromFile() {
+    public void loadFromFile() throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader("tasks.txt"))) {
 
             String line;
@@ -92,8 +90,6 @@ public class TaskManager {
 
             System.out.println("Задачи загружены");
 
-        } catch (IOException e) {
-            System.out.println("Файл не найден, начинаем с пустого списка");
         }
     }
 
