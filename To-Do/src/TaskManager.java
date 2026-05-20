@@ -1,9 +1,6 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public class TaskManager {
 
@@ -29,12 +26,11 @@ public class TaskManager {
         System.out.println("Задача добавлена");
     }
 
-    public void removeTask(int index) {
+    public void removeTask(int index) throws InvalinIndexAtList {
         int i = index - 1;
 
         if (i < 0 || i >= tasks.size()) {
-            System.out.println("Неверный индекс");
-            return;
+            throw new InvalinIndexAtList(i);
         }
 
         System.out.println("Удалена: " + tasks.get(i));
@@ -42,12 +38,11 @@ public class TaskManager {
     }
 
 
-    public void markTaskAsDone(int index) {
+    public void markTaskAsDone(int index) throws InvalinIndexAtList {
         int i = index - 1;
 
         if (i < 0 || i >= tasks.size()) {
-            System.out.println("Неверный индекс");
-            return;
+            throw new InvalinIndexAtList(i);
         }
 
         tasks.get(i).setDone(true);
@@ -70,8 +65,12 @@ public class TaskManager {
         }
     }
 
-    public void loadFromFile() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader("tasks.txt"))) {
+    public void loadFromFile() throws IOException, MyExceptionFileNotFound {
+        File file = new File("tasks.txt");
+        if (!file.exists()) {
+            throw new MyExceptionFileNotFound("Файл tasks.txt не найден");
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 
             String line;
 

@@ -1,68 +1,34 @@
-import javax.imageio.IIOException;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
+   private static TaskManager taskManager = new TaskManager();
+   private static Scanner scanner = new Scanner(System.in);
 
-        TaskManager taskManager = new TaskManager();
+    public static void main(String[] args) {
         try {
             taskManager.loadFromFile();
+        } catch (MyExceptionFileNotFound e) {
+            System.out.println("Начнем с пустого списка");
         } catch (IOException e) {
-            System.out.println("Не удалось загрузить задачи из файла: " + e.getMessage());
+            System.out.println("Ошибка: " + e.getMessage());
         }
-        Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println(taskManager.taskMenu());
 
             int choice = scanner.nextInt();
             scanner.nextLine();
-                switch (choice) {
-                    case 0:
-                       try {
-                           taskManager.saveToFile();
-                       } catch (IOException e) {
-                           System.out.println("Ошибка сохранения файла" + e.getMessage());
-                       }
-                        System.out.println("Выход...");
-                        return;
-                    case 1:
-                        System.out.println("Введите название задачи:");
-                        String title = scanner.nextLine();
-
-                        System.out.println("Введите описание (или оставьте пустым):");
-                        String description = scanner.nextLine();
-
-                        if (description.isEmpty()) {
-                            taskManager.addTask(title);
-                        } else {
-                            taskManager.addTask(title, description);
-                        }
-                        break;
-
-                    case 2:
-                        showTasks(taskManager.getTasks());
-                        break;
-
-                    case 3:
-                        System.out.println("Введите номер задачи для удаления:");
-                        int removeIndex = scanner.nextInt();
-                        taskManager.removeTask(removeIndex);
-                        break;
-
-                    case 4:
-                        System.out.println("Введите номер выполненной задачи:");
-                        int doneIndex = scanner.nextInt();
-                        taskManager.markTaskAsDone(doneIndex);
-                        break;
-
-                    default:
-                        System.out.println("В списке выбора действий нет пункта - " + choice + ", максимум - 4");
-                        System.out.println("Попробуйте ещё раз");
-                }
+            try {
+                selectAction(choice);
+            } catch (InvalinIndexAtList e) {
+                System.out.println("Ошибка: " + e.getMessage());;
+            } catch (IOException e) {
+                System.out.println("Ошибка файла: " + e.getMessage());;
+            }
         }
     }
 
@@ -75,6 +41,48 @@ public class Main {
         int index = 1;
         for (Task task : list) {
             System.out.println(index++ + " : " + task);
+        }
+    }
+
+    public static void selectAction(int choice) throws IOException, InvalinIndexAtList {
+        switch (choice) {
+            case 0:
+                taskManager.saveToFile();
+                System.out.println("Выход...");
+                return;
+            case 1:
+                System.out.println("Введите название задачи:");
+                String title = scanner.nextLine();
+
+                System.out.println("Введите описание (или оставьте пустым):");
+                String description = scanner.nextLine();
+
+                if (description.isEmpty()) {
+                    taskManager.addTask(title);
+                } else {
+                    taskManager.addTask(title, description);
+                }
+                break;
+
+            case 2:
+                showTasks(taskManager.getTasks());
+                break;
+
+            case 3:
+                System.out.println("Введите номер задачи для удаления:");
+                int removeIndex = scanner.nextInt();
+                taskManager.removeTask(removeIndex);
+                break;
+
+            case 4:
+                System.out.println("Введите номер выполненной задачи:");
+                int doneIndex = scanner.nextInt();
+                taskManager.markTaskAsDone(doneIndex);
+                break;
+
+            default:
+                System.out.println("В списке выбора действий нет пункта - " + choice + ", максимум - 4");
+                System.out.println("Попробуйте ещё раз");
         }
     }
 }
