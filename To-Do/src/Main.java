@@ -23,7 +23,11 @@ public class Main {
             int choice = scanner.nextInt();
             scanner.nextLine();
             try {
+//                if (choice == 2) {
+//                    showTasks(taskManager.getTasks());
+//                }
                 selectAction(choice);
+
             } catch (InvalinIndexAtList e) {
                 System.out.println("Ошибка: " + e.getMessage());;
             } catch (IOException e) {
@@ -42,14 +46,19 @@ public class Main {
         for (Task task : list) {
             System.out.println(index++ + " : " + task);
         }
+        System.out.println("\n0 - Выход");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
     }
 
     public static void selectAction(int choice) throws IOException, InvalinIndexAtList {
         switch (choice) {
             case 0:
-                taskManager.saveToFile();
+//                taskManager.saveToFile();
                 System.out.println("Выход...");
-                return;
+                System.exit(0);
+
             case 1:
                 System.out.println("Введите название задачи:");
                 String title = scanner.nextLine();
@@ -62,6 +71,8 @@ public class Main {
                 } else {
                     taskManager.addTask(title, description);
                 }
+
+                taskManager.saveToFile();
                 break;
 
             case 2:
