@@ -8,11 +8,13 @@ public class TaskManager {
 
     public String taskMenu() {
         return """
+                
                 1 - Добавить задачу
                 2 - Показать задачи
                 3 - Удалить задачу
                 4 - Отметить завершенную задачу
                 0 - Выход
+                
                 """;
     }
 
