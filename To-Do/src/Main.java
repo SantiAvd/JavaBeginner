@@ -1,61 +1,48 @@
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
-   private static TaskManager taskManager = new TaskManager();
-   private static Scanner scanner = new Scanner(System.in);
+   private static final TaskManager taskManager = new TaskManager();
+   private static final Scanner scanner = new Scanner(System.in);
+   private static final MenuView menu = new MenuView();
 
     public static void main(String[] args) {
-        try {
-            taskManager.loadFromFile();
-        } catch (MyExceptionFileNotFound e) {
+
+        if (taskManager.fileExist()) {
+            try {
+                taskManager.loadFromFile();
+            } catch (IOException e) {
+                System.out.println("Ошибка файл : " + e.getMessage());
+            }
+        } else {
             System.out.println("Начнем с пустого списка");
-        } catch (IOException e) {
-            System.out.println("Ошибка: " + e.getMessage());
         }
 
         while (true) {
-            System.out.println(taskManager.taskMenu());
+            System.out.println(menu.taskMenu());
 
             int choice = scanner.nextInt();
             scanner.nextLine();
             try {
-//                if (choice == 2) {
-//                    showTasks(taskManager.getTasks());
-//                }
                 selectAction(choice);
-
             } catch (InvalinIndexAtList e) {
                 System.out.println("Ошибка: " + e.getMessage());;
             } catch (IOException e) {
-                System.out.println("Ошибка файла: " + e.getMessage());;
+                System.out.println("Ошибка файла: " + e.getMessage());
             }
         }
-    }
-
-    public static void showTasks(List<Task> list) {
-        if (list.isEmpty()) {
-            System.out.println("Задач пока нет!");
-            return;
-        }
-
-        int index = 1;
-        for (Task task : list) {
-            System.out.println(index++ + " : " + task);
-        }
-        System.out.println("\n0 - Выход");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-
     }
 
     public static void selectAction(int choice) throws IOException, InvalinIndexAtList {
         switch (choice) {
             case 0:
-//                taskManager.saveToFile();
                 System.out.println("Выход...");
                 System.exit(0);
 
@@ -76,7 +63,7 @@ public class Main {
                 break;
 
             case 2:
-                showTasks(taskManager.getTasks());
+                menu.showTasks(taskManager.getTasks());
                 break;
 
             case 3:
