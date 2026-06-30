@@ -6,16 +6,9 @@ public class TaskManager {
 
     private List<Task> tasks = new ArrayList<>();
 
-    public String taskMenu() {
-        return """
-                
-                1 - Добавить задачу
-                2 - Показать задачи
-                3 - Удалить задачу
-                4 - Отметить завершенную задачу
-                0 - Выход
-                
-                """;
+    public boolean fileExist() {
+        File file = new File("tasks.txt");
+        return file.exists();
     }
 
     public void addTask(String title) {
@@ -32,7 +25,7 @@ public class TaskManager {
         int i = index - 1;
 
         if (i < 0 || i >= tasks.size()) {
-            throw new InvalinIndexAtList(i);
+            throw new InvalinIndexAtList("Задачи под номером - " + i + " не существует");
         }
 
         System.out.println("Удалена: " + tasks.get(i));
@@ -44,7 +37,7 @@ public class TaskManager {
         int i = index - 1;
 
         if (i < 0 || i >= tasks.size()) {
-            throw new InvalinIndexAtList(i);
+            throw new InvalinIndexAtList("Задачи под номером - " + i + " не существует");
         }
 
         tasks.get(i).setDone(true);
@@ -67,11 +60,9 @@ public class TaskManager {
         }
     }
 
-    public void loadFromFile() throws IOException, MyExceptionFileNotFound {
+    public void loadFromFile() throws IOException {
         File file = new File("tasks.txt");
-        if (!file.exists()) {
-            throw new MyExceptionFileNotFound("Файл tasks.txt не найден");
-        }
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 
             String line;
